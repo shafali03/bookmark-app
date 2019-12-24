@@ -1,12 +1,3 @@
-feature "Viewing bookmarks" do
-  feature "visiting home page" do
-  scenario "a user can see bookmarks" do
-  visit "/"
-
-  expect(page).to have_content "Bookmark App"
-  end
-end
-
 feature "viewing bookmarks" do
   scenario "bookmark are visible" do
       Bookmark.create(url: "http://www.makersacademy.com", title: "Makers")
@@ -14,7 +5,7 @@ feature "viewing bookmarks" do
       Bookmark.create(url: "http://www.google.com", title: "Google")
 
 
-      visit("/bookmarks")
+      visit('/bookmarks')
 
 
       expect(page).to have_link("Makers",  href: "http://www.makersacademy.com")
@@ -22,4 +13,3 @@ feature "viewing bookmarks" do
       expect(page).to have_link("Google", href: "http://www.google.com")
     end
   end
-end

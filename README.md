@@ -13,3 +13,9 @@ I can store bookmark data for later retrieval
 I want to add a bookmark to Bookmark App
 
 `
+
+`
+As a user
+So I can remove my bookmark from Bookmark App
+I want to delete a bookmark from list
+`
