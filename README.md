@@ -19,3 +19,9 @@ As a user
 So I can remove my bookmark from Bookmark App
 I want to delete a bookmark from list
 `
+
+`
+As a user
+I can change a bookmark in Bookmark App
+I want to update a bookmark
+`

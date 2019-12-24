@@ -1,10 +1,10 @@
 require 'sinatra/base'
 require_relative './lib/bookmark'
 
+
 class BookmarkApp < Sinatra::Base 
 
   enable :sessions, :method_override
-
 
   get '/' do
     erb :index
@@ -29,6 +29,15 @@ class BookmarkApp < Sinatra::Base
     redirect '/bookmarks'
   end
 
+  get '/bookmarks/:id/edit' do
+    @bookmark = Bookmark.find(id: params[:id])
+    erb :'bookmarks/edit'
+  end
+
+  patch '/bookmarks/:id' do
+    Bookmark.edit(id: params[:id], title: params[:title], url: params[:url])
+    redirect '/bookmarks'
+  end
 
 run! if app_file == $0
 end
