@@ -47,10 +47,10 @@ describe Bookmark do
     end
   end
 
-  describe '.update' do
+  describe '.edit' do
     it 'updates the bookmark with the given data' do
       bookmark = Bookmark.create(title: 'Makers Academy', url: 'http://www.makersacademy.com')
-      updated_bookmark = Bookmark.update(id: bookmark.id, url: 'http://www.google.com', title: 'Google')
+      updated_bookmark = Bookmark.edit(id: bookmark.id, url: 'http://www.google.com', title: 'Google')
   
       expect(updated_bookmark).to be_a Bookmark
       expect(updated_bookmark.id).to eq bookmark.id
@@ -69,6 +69,13 @@ describe Bookmark do
       expect(result.id).to eq bookmark.id
       expect(result.title).to eq 'Makers'
       expect(result.url).to eq 'http://www.makersacademy.com'
+    end
+  end
+
+  describe '.create' do
+    it 'Not create a new bookmark if the URL is not valid' do
+      Bookmark.create(url: 'not a bookmark', title: 'not a bookmark')
+      expect(Bookmark.all).to be_empty
     end
   end
 
