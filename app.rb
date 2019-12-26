@@ -2,6 +2,7 @@ require 'sinatra/base'
 require 'sinatra/flash'
 require 'uri'
 require_relative './lib/bookmark'
+require_relative './lib/comment'
 require_relative './database_connection_setup.rb'
 
 
@@ -16,7 +17,7 @@ class BookmarkApp < Sinatra::Base
 
   get '/bookmarks' do
     @bookmarks = Bookmark.all
-    erb :viewing_bookmark
+    erb :"/viewing_bookmark"
   end
 
   get '/bookmarks/new' do
@@ -24,31 +25,50 @@ class BookmarkApp < Sinatra::Base
   end
 
   post '/bookmarks' do
-    flash[:notice] = "You must submit valid URL" unless Bookmark.create(url: params[:url], title: params[:title])
+    if params['url'] =~ /\A#{URI::regexp(['http', 'https'])}\z/
+      Bookmark.create(url: params['url'], title: params[:title])
+    else
+      flash[:notice] = "Must submit valid URL."
+    end
+  
     redirect('/bookmarks')
   end
-
-  post '/bookmarks' do 
-    Bookmark.create(url: params[:url], title: params[:title])
-    redirect '/bookmarks' 
-  end
+#not sure if needed
+  # post '/bookmarks' do 
+  #   Bookmark.create(url: params[:url], title: params[:title])
+  #   redirect '/bookmarks' 
+  # end
 
   delete '/bookmarks/:id' do
     Bookmark.delete(id: params[:id])
     redirect '/bookmarks'
+    # connection = PG.connect(dbname: 'bookmark_manager_test')
+    # connection.exec("DELETE FROM bookmarks WHERE id = #{params['id']}")
+    # redirect '/bookmarks'
   end
 
   get '/bookmarks/:id/edit' do
-    @bookmarks = Bookmark.find(id: params[:id])
+    @bookmark = Bookmark.find(id: params[:id])
     erb :'bookmarks/edit'
   end
 
+
   patch '/bookmarks/:id' do
-    p params
-    Bookmark.edit(id: params[:id], url: params[:url], title: params[:title])
+    Bookmark.edit(id: params[:id], title: params[:title], url: params[:url])
     redirect '/bookmarks'
   end
 
+  get '/bookmarks/:id/comments/new' do
+    @bookmark_id = params[:id]
+    erb :'comments/new'
+  end
+
+  post '/bookmarks/:id/comments' do
+    Comment.create(bookmark_id: params[:id], text: params[:comment])
+    # connection = PG.connect(dbname: 'bookmark_app_test')
+    # connection.exec("INSERT INTO comments (text, bookmark_id) VALUES('#{params[:comment]}', '#{params[:id]}');")
+    redirect '/bookmarks'
+  end
   
   
 run! if app_file == $0
